@@ -1,0 +1,126 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+::ng-deep .app-toolbar {
+  background: #12121a !important;
+  border: none !important;
+  border-bottom: 1px solid #333 !important;
+  border-radius: 0 !important;
+  padding: 0.5rem 1.5rem !important;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  .p-toolbar-group-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .p-toolbar-group-right {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.logo-link {
+  text-decoration: none;
+
+  .logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #64b5f6;
+    letter-spacing: 0.05em;
+  }
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  color: #aaa;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.15s, color 0.15s;
+
+  i {
+    font-size: 0.85rem;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #e0e0e0;
+    text-decoration: none;
+  }
+}
+
+::ng-deep .active-link {
+  background: rgba(100, 181, 246, 0.15) !important;
+  color: #64b5f6 !important;
+}
+
+::ng-deep .header-search {
+  .p-autocomplete-input {
+    background: #2d2d3d;
+    border-color: #444;
+    color: #e0e0e0;
+    width: 220px;
+    font-size: 0.9rem;
+
+    &::placeholder {
+      color: #777;
+    }
+
+    &:focus {
+      border-color: #64b5f6;
+      box-shadow: 0 0 0 1px rgba(100, 181, 246, 0.3);
+    }
+  }
+}
+
+.app-content {
+  flex: 1;
+  padding: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  ::ng-deep .app-toolbar {
+    padding: 0.5rem !important;
+
+    .p-toolbar-group-left {
+      gap: 0.5rem;
+    }
+  }
+
+  .nav-links {
+    gap: 0;
+  }
+
+  .nav-label {
+    display: none;
+  }
+
+  ::ng-deep .header-search {
+    .p-autocomplete-input {
+      width: 140px;
+    }
+  }
+
+  .app-content {
+    padding: 0.75rem;
+  }
+}

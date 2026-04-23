@@ -1,0 +1,17 @@
+<div class="metadata-bar" *ngIf="node">
+  <app-severity-badge *ngIf="node.severity" [severity]="node.severity"></app-severity-badge>
+
+  <p-tag *ngIf="node.domain" [value]="node.domain" severity="info" styleClass="domain-tag"></p-tag>
+
+  <p-tag [value]="node.category" styleClass="category-tag"></p-tag>
+
+  <p-tag [value]="layerLabel" [styleClass]="layerClass" [rounded]="true"></p-tag>
+
+  <p-tag *ngIf="node.angular_version" [value]="'Angular ' + node.angular_version" severity="success" [rounded]="true"></p-tag>
+
+  <p-tag *ngIf="node.module" [value]="node.module" severity="secondary" [rounded]="true"></p-tag>
+
+  <a *ngIf="node.layer1_parent" [routerLink]="['/article', node.layer1_parent]" class="parent-link">
+    <p-tag value="View Principle" icon="pi pi-arrow-up" severity="warning" [rounded]="true"></p-tag>
+  </a>
+</div>

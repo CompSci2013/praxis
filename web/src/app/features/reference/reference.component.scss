@@ -1,0 +1,87 @@
+:host {
+  display: block;
+}
+
+.reference-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 1.75rem;
+  color: #e0e0e0;
+  margin: 0 0 1.5rem 0;
+}
+
+.loading-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.doc-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+::ng-deep .doc-card {
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+
+  &:hover {
+    border-color: #64b5f6;
+    transform: translateY(-1px);
+  }
+
+  .p-card {
+    background: #2d2d3d;
+    border: 1px solid #444;
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0;
+}
+
+.card-order {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #1565c0;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #e0e0e0;
+  font-weight: 600;
+}
+
+.card-preview {
+  font-size: 0.9rem;
+  color: #999;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #777;
+
+  p {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+  }
+}

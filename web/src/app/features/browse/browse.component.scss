@@ -1,0 +1,110 @@
+:host {
+  display: block;
+}
+
+.browse-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.stats-bar {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: #2d2d3d;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+
+  .stat-item {
+    color: #aaa;
+
+    strong {
+      color: #64b5f6;
+      margin-right: 0.25rem;
+    }
+  }
+}
+
+.filter-bar {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    label {
+      font-size: 0.8rem;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  }
+}
+
+.loading-area {
+  padding: 1rem;
+}
+
+.tree-container {
+  ::ng-deep .taxonomy-tree {
+    background: transparent !important;
+    border: 1px solid #333 !important;
+    border-radius: 6px;
+    padding: 0.5rem;
+
+    .p-tree-filter-container {
+      margin-bottom: 0.5rem;
+
+      .p-tree-filter {
+        background: #2d2d3d;
+        border-color: #444;
+        color: #e0e0e0;
+      }
+    }
+
+    .p-treenode-content {
+      padding: 0.4rem 0.5rem;
+      border-radius: 4px;
+      transition: background 0.15s;
+
+      &:hover {
+        background: rgba(100, 181, 246, 0.1) !important;
+      }
+
+      &.p-highlight {
+        background: rgba(100, 181, 246, 0.2) !important;
+        color: #64b5f6;
+      }
+    }
+
+    .p-treenode-label {
+      color: #e0e0e0;
+    }
+
+    .p-treenode-icon {
+      color: #aaa;
+    }
+
+    .p-tree-toggler {
+      color: #aaa !important;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-bar {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

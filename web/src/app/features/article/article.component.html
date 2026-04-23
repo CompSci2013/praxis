@@ -1,0 +1,66 @@
+<!-- Loading skeleton -->
+<div *ngIf="loading" class="article-skeleton">
+  <p-skeleton width="60%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+  <p-skeleton width="100%" height="2rem" styleClass="mb-3"></p-skeleton>
+  <div class="skeleton-chips">
+    <p-skeleton width="5rem" height="1.5rem" styleClass="mr-2" ></p-skeleton>
+    <p-skeleton width="6rem" height="1.5rem" styleClass="mr-2" ></p-skeleton>
+    <p-skeleton width="4rem" height="1.5rem" ></p-skeleton>
+  </div>
+  <p-skeleton width="100%" height="20rem" styleClass="mt-3"></p-skeleton>
+</div>
+
+<!-- Article content -->
+<div *ngIf="!loading && node" class="article-container">
+  <p-breadcrumb [model]="breadcrumbs" [home]="home" styleClass="article-breadcrumb"></p-breadcrumb>
+
+  <h1 class="article-title">{{ node.title }}</h1>
+
+  <app-node-metadata [node]="node"></app-node-metadata>
+
+  <p-splitter [style]="{ height: 'auto' }" [panelSizes]="[70, 30]" [minSizes]="[40, 20]" layout="horizontal" styleClass="article-splitter">
+    <ng-template pTemplate>
+      <div class="content-panel">
+        <app-markdown-renderer *ngIf="node.body" [content]="node.body"></app-markdown-renderer>
+
+        <div *ngIf="!node.body" class="no-content">
+          <p>No content available for this node.</p>
+        </div>
+
+        <!-- L1: Angular implementations accordion -->
+        <p-accordion *ngIf="hasChildren" styleClass="implementations-accordion">
+          <p-accordionTab header="Angular 14 Implementations" [selected]="true">
+            <ul class="implementation-list">
+              <li *ngFor="let child of childNodes">
+                <a [routerLink]="['/article', child.id]" class="impl-link">
+                  <span class="impl-title">{{ child.title }}</span>
+                  <app-severity-badge *ngIf="child.severity" [severity]="child.severity"></app-severity-badge>
+                </a>
+              </li>
+            </ul>
+          </p-accordionTab>
+        </p-accordion>
+
+        <!-- L2: Universal principle link -->
+        <div *ngIf="node.layer === 2 && node.layer1_parent" class="principle-callout">
+          <i class="pi pi-info-circle"></i>
+          <span>This is an Angular-specific implementation. </span>
+          <a [routerLink]="['/article', node.layer1_parent]">View the universal principle.</a>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate>
+      <div class="sidebar-panel">
+        <app-related-links [node]="node" [neighbors]="neighbors"></app-related-links>
+      </div>
+    </ng-template>
+  </p-splitter>
+</div>
+
+<!-- Not found -->
+<div *ngIf="!loading && !node" class="not-found">
+  <h2>Article not found</h2>
+  <p>The requested article could not be loaded.</p>
+  <a routerLink="/browse">Return to Browse</a>
+</div>

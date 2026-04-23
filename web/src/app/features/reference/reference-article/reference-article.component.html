@@ -1,0 +1,42 @@
+<!-- Loading -->
+<div *ngIf="loading" class="article-loading">
+  <p-skeleton width="60%" height="2rem" styleClass="mb-3"></p-skeleton>
+  <p-skeleton width="100%" height="20rem"></p-skeleton>
+</div>
+
+<!-- Document content -->
+<div *ngIf="!loading && document" class="ref-article-container">
+  <div class="back-link">
+    <a routerLink="/reference">
+      <i class="pi pi-arrow-left"></i> All Reference Documents
+    </a>
+  </div>
+
+  <h1 class="article-title">{{ document.title }}</h1>
+
+  <app-markdown-renderer *ngIf="document.body" [content]="document.body"></app-markdown-renderer>
+
+  <!-- Prev/Next navigation -->
+  <p-divider></p-divider>
+  <div class="nav-buttons">
+    <button *ngIf="prevDoc" pButton class="p-button-outlined"
+      [label]="prevDoc.title" icon="pi pi-arrow-left"
+      (click)="goPrev()">
+    </button>
+    <span *ngIf="!prevDoc"></span>
+    <span class="nav-position" *ngIf="allDocs.length > 0">
+      {{ currentIndex + 1 }} / {{ allDocs.length }}
+    </span>
+    <button *ngIf="nextDoc" pButton class="p-button-outlined"
+      [label]="nextDoc.title" icon="pi pi-arrow-right" iconPos="right"
+      (click)="goNext()">
+    </button>
+    <span *ngIf="!nextDoc"></span>
+  </div>
+</div>
+
+<!-- Not found -->
+<div *ngIf="!loading && !document" class="not-found">
+  <h2>Document not found</h2>
+  <a routerLink="/reference">Return to Reference</a>
+</div>

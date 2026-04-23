@@ -1,0 +1,182 @@
+<div class="graph-container">
+  <!-- Toolbar -->
+  <p-toolbar styleClass="graph-toolbar">
+    <div class="p-toolbar-group-left">
+      <p-selectButton [options]="layerOptions" [(ngModel)]="selectedLayer"
+                       optionLabel="label" optionValue="value"
+                       (onChange)="applyFilters()" styleClass="p-button-sm">
+      </p-selectButton>
+
+      <p-multiSelect [options]="domainOptions" [(ngModel)]="selectedDomains"
+                     placeholder="Domains" optionLabel="label" optionValue="value"
+                     (onChange)="applyFilters()" styleClass="filter-select"
+                     [showClear]="true">
+      </p-multiSelect>
+
+      <p-multiSelect [options]="severityOptions" [(ngModel)]="selectedSeverities"
+                     placeholder="Severity" optionLabel="label" optionValue="value"
+                     (onChange)="applyFilters()" styleClass="filter-select"
+                     [showClear]="true">
+      </p-multiSelect>
+
+      <span class="edge-toggles">
+        <span *ngFor="let et of edgeTypes" class="edge-toggle">
+          <p-checkbox [(ngModel)]="et.checked" [binary]="true"
+                      (onChange)="applyFilters()" [label]="et.label">
+          </p-checkbox>
+        </span>
+      </span>
+    </div>
+
+    <div class="p-toolbar-group-right">
+      <button pButton icon="pi pi-arrows-alt" label="Fit"
+              class="p-button-sm p-button-text" (click)="fitGraph()">
+      </button>
+      <button pButton [icon]="viewMode === 'full' ? 'pi pi-sitemap' : 'pi pi-th-large'"
+              [label]="viewMode === 'full' ? 'Neighborhood' : 'Full Graph'"
+              class="p-button-sm p-button-text" (click)="toggleViewMode()">
+      </button>
+    </div>
+  </p-toolbar>
+
+  <!-- Neighborhood controls -->
+  <div class="neighborhood-controls" *ngIf="viewMode === 'neighborhood'">
+    <p-autoComplete [(ngModel)]="centerNodeId" [suggestions]="nodeSuggestions"
+                    (completeMethod)="searchNodes($event)"
+                    (onSelect)="onCenterNodeSelected($event)"
+                    field="label" placeholder="Search for a concept..."
+                    [minLength]="2" styleClass="node-search">
+    </p-autoComplete>
+    <div class="depth-control">
+      <label>Depth: {{neighborhoodDepth}}</label>
+      <p-slider [(ngModel)]="neighborhoodDepth" [min]="1" [max]="4"
+                (onChange)="loadNeighborhood()" styleClass="depth-slider">
+      </p-slider>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-overlay">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3rem; color: #64b5f6;"></i>
+  </div>
+
+  <!-- Graph -->
+  <div class="graph-wrapper" *ngIf="!loading && nodes.length > 0">
+    <ngx-graph
+      [nodes]="nodes"
+      [links]="links"
+      [clusters]="clusters"
+      [layout]="layout"
+      [layoutSettings]="layoutSettings"
+      [zoomToFit$]="zoomToFit$"
+      [autoZoom]="true"
+      [enableZoom]="true"
+      [autoCenter]="true">
+
+      <ng-template #defsTemplate>
+        <svg:marker id="arrow-depends" viewBox="0 -5 10 10" refX="10" refY="0"
+                     markerWidth="6" markerHeight="6" orient="auto">
+          <svg:path d="M0,-5L10,0L0,5" fill="#ef5350"/>
+        </svg:marker>
+        <svg:marker id="arrow-related" viewBox="0 -5 10 10" refX="10" refY="0"
+                     markerWidth="6" markerHeight="6" orient="auto">
+          <svg:path d="M0,-5L10,0L0,5" fill="#42a5f5"/>
+        </svg:marker>
+        <svg:marker id="arrow-parent" viewBox="0 -5 10 10" refX="10" refY="0"
+                     markerWidth="6" markerHeight="6" orient="auto">
+          <svg:path d="M0,-5L10,0L0,5" fill="#66bb6a"/>
+        </svg:marker>
+      </ng-template>
+
+      <ng-template #nodeTemplate let-node>
+        <svg:g class="node-group" (click)="onNodeClick(node)">
+          <svg:rect
+            [attr.width]="node.dimension?.width || 160"
+            [attr.height]="node.dimension?.height || 40"
+            [attr.fill]="node.data?.color || '#333'"
+            [attr.stroke]="node.data?.borderColor || '#555'"
+            [attr.stroke-width]="node.data?.isCenter ? 3 : 1.5"
+            rx="6" ry="6"
+            class="node-rect"/>
+          <svg:text [attr.x]="(node.dimension?.width || 160) / 2"
+                    [attr.y]="(node.dimension?.height || 40) / 2 + 4"
+                    text-anchor="middle" fill="#e0e0e0" font-size="11"
+                    class="node-label">
+            {{node.label | slice:0:22}}{{node.label.length > 22 ? '...' : ''}}
+          </svg:text>
+          <svg:rect *ngIf="node.data?.layer === 2" x="2" y="2" width="18" height="14"
+                    rx="3" fill="#1a237e" stroke="#3f51b5" stroke-width="0.5"/>
+          <svg:text *ngIf="node.data?.layer === 2" x="11" y="12"
+                    text-anchor="middle" fill="#bbdefb" font-size="8">L2</svg:text>
+        </svg:g>
+      </ng-template>
+
+      <ng-template #linkTemplate let-link>
+        <svg:g class="edge-group">
+          <svg:path [attr.d]="link.line"
+                    [attr.stroke]="link.data?.color || '#888'"
+                    [attr.stroke-dasharray]="getEdgeStroke(link.data?.type)"
+                    stroke-width="1.5" fill="none"
+                    [attr.marker-end]="'url(#arrow-' + (link.data?.type === 'depends_on' ? 'depends' : link.data?.type === 'related' ? 'related' : 'parent') + ')'">
+          </svg:path>
+        </svg:g>
+      </ng-template>
+
+      <ng-template #clusterTemplate let-cluster>
+        <svg:g class="cluster-group">
+          <svg:rect
+            [attr.width]="cluster.dimension?.width"
+            [attr.height]="cluster.dimension?.height"
+            fill="rgba(255,255,255,0.03)"
+            stroke="rgba(255,255,255,0.1)"
+            stroke-width="1" rx="8" ry="8"/>
+          <svg:text x="10" y="18" fill="rgba(255,255,255,0.4)" font-size="12">
+            {{cluster.label}}
+          </svg:text>
+        </svg:g>
+      </ng-template>
+    </ngx-graph>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && nodes.length === 0" class="empty-state">
+    <i class="pi pi-sitemap" style="font-size: 4rem; color: #555;"></i>
+    <p>No nodes match the current filters.</p>
+  </div>
+
+  <!-- Legend -->
+  <p-panel header="Legend" [toggleable]="true" [collapsed]="true" styleClass="graph-legend">
+    <div class="legend-content">
+      <div class="legend-section">
+        <h4>Domains</h4>
+        <div class="legend-items">
+          <span class="legend-item" *ngFor="let d of domainOptions">
+            <span class="legend-color" [style.background]="domainColors[d.value] || '#333'"></span>
+            {{d.label}}
+          </span>
+          <span class="legend-item">
+            <span class="legend-color" style="background: #1a237e;"></span>
+            Angular (L2)
+          </span>
+        </div>
+      </div>
+      <div class="legend-section">
+        <h4>Edges</h4>
+        <div class="legend-items">
+          <span class="legend-item"><span class="legend-line" style="border-color: #ef5350;"></span> Depends On</span>
+          <span class="legend-item"><span class="legend-line dashed" style="border-color: #42a5f5;"></span> Related</span>
+          <span class="legend-item"><span class="legend-line" style="border-color: #66bb6a;"></span> Layer Mapping</span>
+        </div>
+      </div>
+      <div class="legend-section">
+        <h4>Severity (border)</h4>
+        <div class="legend-items">
+          <span class="legend-item"><span class="legend-color" style="background: #ef5350;"></span> Critical</span>
+          <span class="legend-item"><span class="legend-color" style="background: #ffa726;"></span> Important</span>
+          <span class="legend-item"><span class="legend-color" style="background: #42a5f5;"></span> Recommended</span>
+          <span class="legend-item"><span class="legend-color" style="background: #78909c;"></span> Informational</span>
+        </div>
+      </div>
+    </div>
+  </p-panel>
+</div>

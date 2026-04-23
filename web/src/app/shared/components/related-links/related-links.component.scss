@@ -1,0 +1,89 @@
+:host {
+  display: block;
+}
+
+.related-links {
+  padding: 0.5rem;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  color: #e0e0e0;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #333;
+}
+
+.link-group {
+  margin-bottom: 1.25rem;
+}
+
+.group-title {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  i {
+    margin-right: 0.4rem;
+    font-size: 0.85rem;
+  }
+}
+
+.link-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin-bottom: 0.25rem;
+  }
+}
+
+.node-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  color: #64b5f6;
+  text-decoration: none;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(100, 181, 246, 0.1);
+    text-decoration: none;
+  }
+}
+
+.node-title {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.node-layer {
+  font-size: 0.75rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  font-weight: 600;
+
+  &.l1 {
+    background: #1565c0;
+    color: #fff;
+  }
+
+  &.l2 {
+    background: #6a1b9a;
+    color: #fff;
+  }
+}
+
+.no-links {
+  padding: 1rem;
+}
+
+.muted {
+  color: #777;
+  font-style: italic;
+}

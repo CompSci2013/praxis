@@ -1,0 +1,147 @@
+:host {
+  display: block;
+}
+
+.article-skeleton {
+  padding: 1rem;
+
+  .skeleton-chips {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+}
+
+.article-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+::ng-deep .article-breadcrumb {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 0 0.5rem 0 !important;
+  font-size: 0.85rem;
+}
+
+.article-title {
+  font-size: 2rem;
+  color: #e0e0e0;
+  margin: 0.5rem 0 0.75rem 0;
+  font-weight: 600;
+}
+
+::ng-deep .article-splitter {
+  border: none !important;
+  background: transparent !important;
+
+  .p-splitter-gutter {
+    background: #333 !important;
+  }
+}
+
+.content-panel {
+  padding: 1rem 1.5rem 1rem 0;
+  overflow-y: auto;
+}
+
+.sidebar-panel {
+  padding: 1rem 0 1rem 1rem;
+  border-left: 1px solid #333;
+  overflow-y: auto;
+}
+
+.no-content {
+  color: #777;
+  font-style: italic;
+  padding: 2rem 0;
+}
+
+.implementation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.impl-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  color: #64b5f6;
+  text-decoration: none;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(100, 181, 246, 0.1);
+  }
+}
+
+.impl-title {
+  flex: 1;
+}
+
+::ng-deep .implementations-accordion {
+  margin-top: 2rem;
+
+  .p-accordion-header-link {
+    background: #2d2d3d !important;
+    border-color: #444 !important;
+    color: #e0e0e0 !important;
+  }
+
+  .p-accordion-content {
+    background: #1a1a2e !important;
+    border-color: #444 !important;
+  }
+}
+
+.principle-callout {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(100, 181, 246, 0.1);
+  border: 1px solid rgba(100, 181, 246, 0.3);
+  border-radius: 6px;
+
+  i {
+    margin-right: 0.5rem;
+    color: #64b5f6;
+  }
+
+  a {
+    color: #64b5f6;
+    font-weight: 600;
+  }
+}
+
+.not-found {
+  text-align: center;
+  padding: 4rem 2rem;
+
+  h2 {
+    color: #e0e0e0;
+  }
+
+  p {
+    color: #999;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  ::ng-deep .article-splitter {
+    flex-direction: column !important;
+  }
+
+  .content-panel {
+    padding-right: 0;
+  }
+
+  .sidebar-panel {
+    border-left: none;
+    border-top: 1px solid #333;
+    padding-left: 0;
+    padding-top: 1rem;
+  }
+}

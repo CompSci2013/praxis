@@ -1,0 +1,26 @@
+<div class="reference-container">
+  <h1 class="page-title">Reference Documentation</h1>
+
+  <div *ngIf="loading" class="loading-grid">
+    <p-skeleton *ngFor="let i of [1,2,3,4]" width="100%" height="8rem" styleClass="mb-3"></p-skeleton>
+  </div>
+
+  <div *ngIf="!loading" class="doc-grid">
+    <p-card *ngFor="let doc of documents; let i = index"
+      [routerLink]="['/reference', doc.slug]"
+      styleClass="doc-card">
+      <ng-template pTemplate="header">
+        <div class="card-header">
+          <span class="card-order">{{ i + 1 }}</span>
+          <h3 class="card-title">{{ doc.title }}</h3>
+        </div>
+      </ng-template>
+      <p class="card-preview">{{ getPreview(doc) }}</p>
+    </p-card>
+  </div>
+
+  <div *ngIf="!loading && !documents.length" class="empty-state">
+    <i class="pi pi-book" style="font-size: 3rem; color: #555;"></i>
+    <p>No reference documents available.</p>
+  </div>
+</div>

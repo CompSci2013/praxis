@@ -1,0 +1,120 @@
+<div class="search-container">
+  <h1 class="page-title">Search</h1>
+
+  <p-tabView [(activeIndex)]="activeTabIndex">
+    <!-- Semantic Search Tab -->
+    <p-tabPanel header="Semantic Search" leftIcon="pi pi-search">
+      <div class="search-input-row">
+        <input type="text" pInputText [(ngModel)]="searchQuery"
+          placeholder="Describe what you're looking for..."
+          (keyup.enter)="onSemanticSearch()"
+          class="search-input">
+        <button pButton label="Search" icon="pi pi-search"
+          (click)="onSemanticSearch()"
+          [loading]="searchLoading"
+          [disabled]="!searchQuery.trim()">
+        </button>
+      </div>
+
+      <!-- Semantic Results -->
+      <div *ngIf="searchLoading" class="results-loading">
+        <p-skeleton width="100%" height="4rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="100%" height="4rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+
+      <div *ngIf="!searchLoading && searchResults.length" class="results-list">
+        <div *ngFor="let result of searchResults" class="result-card"
+          (click)="result.node ? navigateToArticle(result.node.id) : null"
+          [class.clickable]="!!result.node">
+          <div class="result-header">
+            <span class="result-title" *ngIf="result.node">{{ result.node.title }}</span>
+            <span class="result-title" *ngIf="!result.node">{{ result.file_path }}</span>
+            <span class="result-score">{{ getScorePercent(result.score) }}% match</span>
+          </div>
+          <p class="result-snippet">{{ getSnippet(result.content) }}</p>
+          <div class="result-meta" *ngIf="result.node">
+            <app-severity-badge *ngIf="result.node.severity" [severity]="result.node.severity"></app-severity-badge>
+            <span class="meta-tag">{{ result.node.category }}</span>
+            <span class="meta-layer" [class.l1]="result.node.layer === 1" [class.l2]="result.node.layer === 2">
+              L{{ result.node.layer }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!searchLoading && !searchResults.length && searchQuery" class="no-results">
+        <p>No results found. Try different search terms.</p>
+      </div>
+    </p-tabPanel>
+
+    <!-- Filter Tab -->
+    <p-tabPanel header="Filter" leftIcon="pi pi-filter">
+      <div class="filter-row">
+        <div class="filter-field">
+          <label>Layer</label>
+          <p-dropdown [options]="layerOptions" [(ngModel)]="selectedLayer"
+            optionLabel="label" optionValue="value"
+            placeholder="All Layers" [showClear]="true">
+          </p-dropdown>
+        </div>
+        <div class="filter-field">
+          <label>Domain</label>
+          <p-dropdown [options]="domainOptions" [(ngModel)]="selectedDomain"
+            optionLabel="label" optionValue="value"
+            placeholder="All Domains" [showClear]="true" [filter]="true">
+          </p-dropdown>
+        </div>
+        <div class="filter-field">
+          <label>Category</label>
+          <p-dropdown [options]="categoryOptions" [(ngModel)]="selectedCategory"
+            optionLabel="label" optionValue="value"
+            placeholder="All Categories" [showClear]="true" [filter]="true">
+          </p-dropdown>
+        </div>
+        <div class="filter-field">
+          <label>Severity</label>
+          <p-dropdown [options]="severityOptions" [(ngModel)]="selectedSeverity"
+            optionLabel="label" optionValue="value"
+            placeholder="All Severities" [showClear]="true">
+          </p-dropdown>
+        </div>
+        <div class="filter-field filter-action">
+          <button pButton label="Apply Filters" icon="pi pi-filter"
+            (click)="onFilterSearch()" [loading]="filterLoading">
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Results -->
+      <div *ngIf="filterLoading" class="results-loading">
+        <p-skeleton width="100%" height="4rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="100%" height="4rem" styleClass="mb-2"></p-skeleton>
+        <p-skeleton width="100%" height="4rem"></p-skeleton>
+      </div>
+
+      <div *ngIf="!filterLoading && filterResults.length" class="results-grid">
+        <p-card *ngFor="let node of filterResults" styleClass="node-card"
+          (click)="navigateToArticle(node.id)">
+          <ng-template pTemplate="header">
+            <div class="card-header">
+              <span class="card-title">{{ node.title }}</span>
+              <span class="card-layer" [class.l1]="node.layer === 1" [class.l2]="node.layer === 2">
+                L{{ node.layer }}
+              </span>
+            </div>
+          </ng-template>
+          <div class="card-meta">
+            <app-severity-badge *ngIf="node.severity" [severity]="node.severity"></app-severity-badge>
+            <span class="meta-tag" *ngIf="node.domain">{{ node.domain }}</span>
+            <span class="meta-tag">{{ node.category }}</span>
+          </div>
+        </p-card>
+      </div>
+
+      <div *ngIf="!filterLoading && !filterResults.length && (selectedDomain || selectedCategory || selectedSeverity || selectedLayer)" class="no-results">
+        <p>No nodes match the selected filters.</p>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+</div>

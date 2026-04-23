@@ -1,0 +1,25 @@
+<div class="related-links" *ngIf="linkGroups.length">
+  <h3 class="section-title">Related</h3>
+
+  <div *ngFor="let group of linkGroups" class="link-group">
+    <h4 class="group-title">
+      <i [class]="group.icon"></i>
+      {{ group.label }}
+    </h4>
+    <ul class="link-list">
+      <li *ngFor="let linked of group.nodes">
+        <a [routerLink]="['/article', linked.id]" class="node-link">
+          <span class="node-title">{{ linked.title }}</span>
+          <app-severity-badge *ngIf="linked.severity" [severity]="linked.severity"></app-severity-badge>
+          <span class="node-layer" [class.l1]="linked.layer === 1" [class.l2]="linked.layer === 2">
+            L{{ linked.layer }}
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="no-links" *ngIf="!linkGroups.length && node">
+  <p class="muted">No related nodes found.</p>
+</div>

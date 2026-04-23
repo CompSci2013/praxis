@@ -1,0 +1,33 @@
+<div class="app-container">
+  <p-toolbar styleClass="app-toolbar">
+    <div class="p-toolbar-group-left">
+      <a routerLink="/" class="logo-link">
+        <span class="logo-text">Praxis</span>
+      </a>
+      <nav class="nav-links">
+        <a *ngFor="let item of navItems"
+          [routerLink]="item.routerLink"
+          routerLinkActive="active-link"
+          class="nav-link">
+          <i [class]="item.icon"></i>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-toolbar-group-right">
+      <p-autoComplete [(ngModel)]="searchText"
+        [suggestions]="searchSuggestions"
+        (completeMethod)="onSearchComplete($event)"
+        (onSelect)="onSearchSelect($event)"
+        placeholder="Quick search..."
+        [minLength]="2"
+        styleClass="header-search">
+      </p-autoComplete>
+    </div>
+  </p-toolbar>
+
+  <main class="app-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

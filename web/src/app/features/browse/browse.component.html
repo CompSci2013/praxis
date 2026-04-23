@@ -1,0 +1,53 @@
+<div class="browse-container">
+  <!-- Stats bar -->
+  <div class="stats-bar" *ngIf="stats">
+    <span class="stat-item">
+      <strong>{{ stats.totalNodes }}</strong> nodes
+    </span>
+    <span class="stat-item">
+      <strong>{{ stats.layer1Count }}</strong> L1
+    </span>
+    <span class="stat-item">
+      <strong>{{ stats.layer2Count }}</strong> L2
+    </span>
+    <span class="stat-item">
+      <strong>{{ stats.edgesByType.depends_on }}</strong> dependencies
+    </span>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>Layer</label>
+      <p-selectButton [options]="layerOptions" [(ngModel)]="selectedLayer"
+        (onChange)="onLayerChange()" optionLabel="label" optionValue="value">
+      </p-selectButton>
+    </div>
+    <div class="filter-group">
+      <label>Severity</label>
+      <p-multiSelect [options]="severityOptions" [(ngModel)]="selectedSeverities"
+        (onChange)="onSeverityChange()" optionLabel="label" optionValue="value"
+        placeholder="All severities" [maxSelectedLabels]="2"
+        selectedItemsLabel="{0} selected">
+      </p-multiSelect>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-area">
+    <p-skeleton width="100%" height="2rem" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="80%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="90%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="70%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+    <p-skeleton width="85%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+  </div>
+
+  <!-- Tree -->
+  <div *ngIf="!loading" class="tree-container">
+    <p-tree [value]="treeNodes" selectionMode="single"
+      (onNodeSelect)="onNodeSelect($event)"
+      [filter]="true" filterPlaceholder="Filter nodes..."
+      styleClass="taxonomy-tree">
+    </p-tree>
+  </div>
+</div>
