@@ -55,15 +55,20 @@ router.get('/', (req, res) => {
   function formatLayer(hierarchy) {
     return Object.entries(hierarchy)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([domain, categories]) => ({
-        domain,
-        categories: Object.entries(categories)
+      .map(([domain, categories]) => {
+        const formattedCategories = Object.entries(categories)
           .sort(([a], [b]) => a.localeCompare(b))
           .map(([category, nodes]) => ({
-            category,
+            name: category,
             nodes: nodes.sort((a, b) => a.title.localeCompare(b.title)),
-          })),
-      }));
+          }));
+        const nodeCount = formattedCategories.reduce((sum, cat) => sum + cat.nodes.length, 0);
+        return {
+          name: domain,
+          categories: formattedCategories,
+          nodeCount,
+        };
+      });
   }
 
   res.json({
